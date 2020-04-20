@@ -7,6 +7,8 @@ import javafx.application.Application;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
@@ -17,6 +19,7 @@ import javafx.util.Duration;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 
 public class Main extends Application {
@@ -27,23 +30,52 @@ public class Main extends Application {
     private  Pane pane = new Pane();
     private Tile tile;
     private RowOf3 rowOf3;
+    Stage window;
 
-    public static void main(String[] args) {
-	launch(args);
+    public static void main(String[] args) { launch(args);
     }
 
     public void checkState(){
-        for(RowOf3  rowOf3 : rowOf3List){
-            if(rowOf3.isComplete()){
+        boolean boardFull = true;
+        for(RowOf3  rowOf3 : rowOf3List) {
+            if (rowOf3.isComplete()) {
                 playable = false;
                 playEndGame(rowOf3);
-                break;
+                gameOver();
             }
         }
 
+            for(int y =0; y <3; y++){
+                for(int x =0; x<3; x++){
+                    Tile tile = board[x][y];
+                    if(tile.getValue().isEmpty()){
+                        boardFull = false;
+                    }
+                }
+        }
+        if(boardFull){
+            gameOver();
 
+        }
 
     }
+
+    private void gameOver(){
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Again?");
+        alert.setHeaderText("GAME OVER!");
+        alert.setHeaderText("Do you wanna play again?");
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if(result.get() == ButtonType.OK){
+
+
+        }else {
+            window.close();
+        }
+
+    }
+
     private void playEndGame(RowOf3 rowOf3){
         Line line = new Line();
         line.setStartX(rowOf3.tiles[0].getCenterX());
@@ -66,8 +98,9 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        primaryStage.setScene(new Scene(createContent()));
-        primaryStage.show();
+        window = primaryStage;
+        window.setScene(new Scene(createContent()));
+        window.show();
     }
     private Parent createContent(){
 
