@@ -4,6 +4,7 @@ import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 
@@ -55,7 +56,6 @@ public class Main extends Application {
         }
         if(boardFull){
             gameOver();
-
         }
 
     }
@@ -68,6 +68,15 @@ public class Main extends Application {
 
         Optional<ButtonType> result = alert.showAndWait();
         if(result.get() == ButtonType.OK){
+
+            window.close();
+            Platform.runLater( () -> {
+                try {
+                    new Main().start( new Stage() );
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
 
 
         }else {
